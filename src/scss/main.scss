@@ -4,6 +4,14 @@ h1 {
   color: $color-primary;
   text-align: center
 }
-.text-center {
-  text-align: center
+.login {
+  border: 1px solid $color-primary;
+}
+// .map {
+//   width: 500px;
+//   height: 500px;
+//   border: 1px solid $color-primary;
+// }
+input, button {
+  border: 1px solid #ddd
 }
