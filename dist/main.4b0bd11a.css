@@ -7189,4 +7189,8 @@ a.text-dark:hover, a.text-dark:focus {
 
 /*# sourceMappingURL=bootstrap.css.map */
 h1 {
-  color: royalblue; }
+  color: royalblue;
+  text-align: center; }
+
+.text-center {
+  text-align: center; }

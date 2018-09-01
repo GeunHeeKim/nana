@@ -178,6 +178,13 @@ Object.defineProperty(exports, "__esModule", {
 var msg = exports.msg = {
   hello: 'Hello Parcel with Babel!!'
 };
+},{}],"src/js/login.js":[function(require,module,exports) {
+var validation = function validation() {
+  var username = document.getElementById('login_id').value;
+  var password = document.getElementById('login_pw').value;
+
+  console.log(username);
+};
 },{}],"../../../../usr/local/lib/node_modules/parcel-bundler/node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
@@ -17209,10 +17216,12 @@ require('../scss/main.scss');
 
 var _msg = require('./msg');
 
+var _login = require('./login');
+
 require('bootstrap');
 
 console.log(_msg.msg.hello);
-},{"../scss/main.scss":"src/scss/main.scss","./msg":"src/js/msg.js","bootstrap":"node_modules/bootstrap/dist/js/bootstrap.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../scss/main.scss":"src/scss/main.scss","./msg":"src/js/msg.js","./login":"src/js/login.js","bootstrap":"node_modules/bootstrap/dist/js/bootstrap.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -17241,7 +17250,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '53870' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58029' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
