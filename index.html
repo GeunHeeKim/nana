@@ -5,42 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="shortcut icon" href="src/img/favicon.png" type="png" />
+  <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
   <title>My DisConnect Planet</title>
 </head>
 <body>
   <div class="container">
     <h1>Welcome! My Digital Disconnected Planet!</h1>
-    <form action="">
-      <div
-      class="row"
-      >
+    <form id="myform" action="http://ec2-13-209-88-11.ap-northeast-2.compute.amazonaws.com/auth/login" method="post">
+      <div class="row">
         <div
         class="align-items-center align-self-start
         col-xs-12 col-md-4"
         >
             <div class="row  login">
                 <div class="col-12">
-                  <label for="login_id">ID : </label>
+                  <label for="email">email : </label>
                   <input
                   type="text"
-                  name="login_id"
-                  id="login_id"
+                  name="email"
+                  id="email"
                   placeholder="Please type your ID"
                   >
                 </div>
                 <div class="col-12">
-                  <label for="login_pw">PASSWORD : </label>
+                  <label for="password">PASSWORD : </label>
                   <input
                   type="text"
-                  name="login_pw"
-                  id="login_pw"
+                  name="password"
+                  id="password"
                   placeholder="Please type your PASSWORD"
                   >
                 </div>
                 <div class="col-12">
-                  <button id="btn_login" onclick="validation();">
-                    Log In
-                  </button>
+                  <button type="submit">Login</button>
                 </div>
             </div>
             <p><a href="src/page/map.html">Go to Map</a></p>
@@ -49,14 +49,27 @@
   </form>
   </div>
   <script src="src/js/main.js"></script>
-  <script type="text/javascript">
-  //   var validation = function() {
-  //   var username = document.getElementById('login_id').value;
-  //   var password = document.getElementById('login_pw').value;
 
-  //   console.log(username)
-  // }
+  <script>
+    // Attach a submit handler to the form
+    $( "#myform" ).submit(function( event ) {
 
+      // Stop form from submitting normally
+      event.preventDefault();
+
+      // Get some values from elements on the page:
+      var $form = $( this ),
+      url = $form.attr( "action" );
+
+      // Send the data using post
+      var posting = $.post( url, $( "#myform" ).serialize());
+
+      // Put the results in a div
+      posting.done(function( data ) {
+        $(location).attr('href', '/src/page/map.html?user_id='+data.id)
+      });
+    });
   </script>
+
 </body>
 </html>
