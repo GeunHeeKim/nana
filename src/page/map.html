@@ -35,7 +35,8 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="sample5_address">주소</label>
-                    <input type="text" class="form-control" id="sample5_address" onclick="sample5_execDaumPostcode()" placeholder="주소">
+                    <input type="text" class="form-control" id="sample5_address" onclick="sample5_execDaumPostcode()"
+                           placeholder="주소">
                 </div>
             </div>
             <div class="form-row">
@@ -52,39 +53,20 @@
                     <input type="text" class="form-control" id="radius" placeholder="반경">
                 </div>
             </div>
-            <input type="button" onclick="drawCircle()" value="적용"/>
+            <input type="button" onclick="setBannedInfo()" value="적용"/>
         </form>
     </div>
 
     <div class="row">
-        <table class="table">
+        <h4 style="margin-top: 20px">유저 목록</h4>
+        <table class="table" id="table-body">
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th scope="col">Name</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-            </tr>
             </tbody>
         </table>
     </div>
@@ -99,6 +81,16 @@
 <script type="text/javascript"
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e9779ac79c2e0525fcf9453710f4f184&libraries=services,clusterer,drawing"></script>
 <script type="text/javascript">
+    //Recycleable Object
+    var bannedInfo = {
+        user_id : '',
+        latitude : '',
+        longitude : '',
+        radius : '',
+        contact: []
+    };
+
+    var fullContact = [];
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
@@ -113,23 +105,29 @@
 
     $(document).ready(function () {
         var args = getArgs(); //URL에서 args를 파싱
-        var q = args.q || ''; //정의된 전달인자가 있으면 사용하고 없으면 기본값 사용
-        var n = args.n ? parseInt(args.n) : 10;
+
+        bannedInfo.user_id = args.user_id;
 
         $.get("http://ec2-13-209-88-11.ap-northeast-2.compute.amazonaws.com/zone/" + args.user_id)
             .done(function (data) {
                 for (let loc of data) {
-                    drawZoneLoad(loc.latitude, loc.longitude, loc.radius * 100);
+                    drawZoneLoad(loc.latitude, loc.longitude, loc.radius * 1000, loc.contact);
                 }
+            });
+
+        $.get("http://ec2-13-209-88-11.ap-northeast-2.compute.amazonaws.com/contact/" + args.user_id)
+            .done(function (data) {
+                fullContact = data;
             });
     });
 
-    function drawZoneLoad(latitude, longitude, radius) {
+    function drawZoneLoad(latitude, longitude, radius, contact) {
         // 지도에 표시할 원을 생성합니다
 
         var marker = new daum.maps.Marker({
             map: map,
-            position: new daum.maps.LatLng(latitude, longitude)
+            position: new daum.maps.LatLng(latitude, longitude),
+            clickable: true
         });
 
         var circle = new daum.maps.Circle({
@@ -143,8 +141,54 @@
             fillOpacity: 0.2  // 채우기 불투명도 입니다
         });
 
+        daum.maps.event.addListener(marker, 'click', function () {
+            // 마커 위에 인포윈도우를 표시합니다
+            $("#table-body").find('tbody').empty();
+            showBannedContact(contact);
+        });
+
         // 지도에 원을 표시합니다
         circle.setMap(map);
+    }
+
+    function showBannedContact(data) {
+        var listLength = data.length;
+        for (var i = 0; i < listLength; i++) {
+            var contact = data[i];
+
+            $("#table-body").find('tbody')
+                .append($('<tr>')
+                    .append($('<td>')
+                        .append(contact.id)
+                    )
+                    .append($('<td>')
+                        .append(contact.name)
+                    )
+                );
+        }
+    }
+
+    function showContactList(data) {
+        var listLength = data.length;
+        for (var i = 0; i < listLength; i++) {
+            var contact = data[i];
+
+            $("#table-body").find('tbody')
+                .append($('<tr>')
+                    .append($('<td>')
+                        .append(contact.id)
+                    )
+                    .append($('<td>')
+                        .append(contact.name)
+                    )
+                    .css('cursor', 'pointer')
+                    .click(function (e) {
+                        e.target.parentNode.style.backgroundColor = "#EEEEEE";
+                        bannedInfo.contact.push(e.target.parentNode.firstChild.innerText);
+                        return false;
+                    })
+                );
+        }
     }
 
     function getArgs() {
@@ -192,25 +236,51 @@
     //     displayMarker(locPosition, message);
     // }
 
-    function drawCircle() {
+    function setBannedInfo() {
         var latitude = document.getElementById("latitude").value;
         var longitude = document.getElementById("longitude").value;
         var radius = document.getElementById("radius").value;
 
-        // 지도에 표시할 원을 생성합니다
-        var circle = new daum.maps.Circle({
-            center: new daum.maps.LatLng(latitude, longitude),  // 원의 중심좌표 입니다
-            radius: radius * 1000, // 미터 단위의 원의 반지름입니다
-            strokeWeight: 1, // 선의 두께입니다
-            strokeColor: '#00a0e9', // 선의 색깔입니다
-            strokeOpacity: 0.5, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-            strokeStyle: 'solid', // 선의 스타일 입니다
-            fillColor: '#00a0e9', // 채우기 색깔입니다
-            fillOpacity: 0.2  // 채우기 불투명도 입니다
-        });
+        if (radius) {
+            // 지도에 표시할 원을 생성합니다
+            var circle = new daum.maps.Circle({
+                center: new daum.maps.LatLng(latitude, longitude),  // 원의 중심좌표 입니다
+                radius: radius * 1000, // 미터 단위의 원의 반지름입니다
+                strokeWeight: 1, // 선의 두께입니다
+                strokeColor: '#00a0e9', // 선의 색깔입니다
+                strokeOpacity: 0.5, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                strokeStyle: 'solid', // 선의 스타일 입니다
+                fillColor: '#00a0e9', // 채우기 색깔입니다
+                fillOpacity: 0.2  // 채우기 불투명도 입니다
+            });
 
-        // 지도에 원을 표시합니다
-        circle.setMap(map);
+            bannedInfo.latitude = latitude;
+            bannedInfo.longitude = longitude;
+            bannedInfo.radius = radius;
+
+            // 지도에 원을 표시합니다
+            circle.setMap(map);
+
+            console.log(bannedInfo);
+
+            $.ajax({
+                type: 'POST',
+                url: 'http://ec2-13-209-88-11.ap-northeast-2.compute.amazonaws.com/zone',
+                data: bannedInfo,
+                processData: false,
+                contentType: 'application/json',
+                crossDomain: true
+            })
+                .done(function() {
+                    alert('업로드 완료!');
+                    bannedInfo.contact = [];
+                })
+                .fail(function () {
+                    alert('업로드 실패');
+                });
+        } else {
+            alert("반경을 입력해주세요");
+        }
     }
 
     // 지도에 마커와 인포윈도우를 표시하는 함수입니다
@@ -287,7 +357,10 @@
                             position: coords,
                             map: map
                         });
-                        marker.setPosition(coords)
+
+                        marker.setPosition(coords);
+
+                        showContactList(fullContact);
                     }
                 });
             }
