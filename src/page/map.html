@@ -263,7 +263,7 @@
             $.ajax({
                 type: 'POST',
                 url: 'http://ec2-13-209-88-11.ap-northeast-2.compute.amazonaws.com/zone',
-                data: bannedInfo,
+                data: JSON.stringify(bannedInfo),
                 processData: false,
                 contentType: 'application/json',
                 crossDomain: true
