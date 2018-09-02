@@ -2,52 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="shortcut icon" href="src/img/favicon.png" type="png" />
+  <link href="./src/scss/signin.css" rel="stylesheet">
   <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"
       integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
       crossorigin="anonymous"></script>
   <title>My DisConnect Planet</title>
 </head>
-<body>
-  <div class="container">
-    <h1>Welcome! My Digital Disconnected Planet!</h1>
-    <form id="myform" action="http://ec2-13-209-88-11.ap-northeast-2.compute.amazonaws.com/auth/login" method="post">
-      <div class="row">
-        <div
-        class="align-items-center align-self-start
-        col-xs-12 col-md-4"
-        >
-            <div class="row  login">
-                <div class="col-12">
-                  <label for="email">email : </label>
-                  <input
-                  type="text"
-                  name="email"
-                  id="email"
-                  placeholder="Please type your ID"
-                  >
-                </div>
-                <div class="col-12">
-                  <label for="password">PASSWORD : </label>
-                  <input
-                  type="text"
-                  name="password"
-                  id="password"
-                  placeholder="Please type your PASSWORD"
-                  >
-                </div>
-                <div class="col-12">
-                  <button type="submit">Login</button>
-                </div>
-            </div>
-            <p><a href="src/page/map.html">Go to Map</a></p>
-        </div>
-      </div>
-  </form>
+<body class="text-center">
+
+<form class="form-signin" id="myform" action="http://ec2-13-209-88-11.ap-northeast-2.compute.amazonaws.com/auth/login" method="post">
+  <!--<img class="mb-4" src="./assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
+  <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+  <label for="email" class="sr-only">Email address</label>
+  <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+  <label for="password" class="sr-only">Password</label>
+  <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+  <div class="checkbox mb-3">
+    <label>
+      <input type="checkbox" value="remember-me"> Remember me
+    </label>
   </div>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+</form>
+
   <script src="src/js/main.js"></script>
 
   <script>
